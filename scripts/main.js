@@ -39,18 +39,37 @@ function displayLibrary(){
     }
 }
 
-document.getElementById("newBook").onclick = function(){
-    const title = prompt("Enter the title of the book");
-    const author = prompt("Enter the author of the book");
-    const pages = parseInt(prompt("Enter the number of pages of the book"));
-    const read = confirm("Have you read this book?");
+const dialog = document.querySelector('dialog');
+const newBookButton = document.getElementById('newBook');
+const sumbitButton = dialog.querySelector('#submit');
+
+
+//Show dialog
+newBookButton.addEventListener('click', () => {
+    dialog.showModal();
+});
+
+//Close dialog
+sumbitButton.addEventListener('click', () => {
+    const title = document.getElementById('title').value;
+    const author = document.getElementById('author').value;
+    const pages = document.getElementById('pages').value;
+    const read = document.getElementById('read').checked;
+
+    if(title === "" || author === "" || pages === ""){
+        alert('Please fill all required fields');
+        return;
+    }
 
     addBookToLibrary(title, author, pages, read);
     displayLibrary();
-};
+    dialog.close();
+});
 
-addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, true);
-addBookToLibrary("The Fellowship of the Ring", "J.R.R. Tolkien", 398, false);
-addBookToLibrary("The Two Towers", "J.R.R. Tolkien", 327, false);
+// Close dialog when cancel is clicked
+cancelButton.addEventListener("click", function () {
+    newBookDialog.close();
+});
 
-window.onload = displayLibrary;
+
+window.onload = displayLibrary();
