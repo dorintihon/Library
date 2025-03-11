@@ -19,6 +19,18 @@ function addBookToLibrary(title, author, pages, read){
     library.push(book);
 }
 
+function removeBookFromLibrary(ID){
+    const index = library.findIndex(book => book.ID === ID);
+    library.splice(index, 1);
+    displayLibrary();
+}
+
+function toggleReadStatus(ID){
+    const book = library.find(book => book.ID === ID);
+    book.read = !book.read;
+    displayLibrary();
+}
+
 function displayLibrary(){
     const libraryContainer = document.getElementById('libraryContainer');
     libraryContainer.innerHTML = "";
@@ -33,6 +45,8 @@ function displayLibrary(){
             <p>Author: ${library[i].author}</p>
             <p>Pages: ${library[i].pages}</p>
             <p>Read: ${library[i].read ? "Yes" : "No"}</p>
+            <button onclick="removeBookFromLibrary('${library[i].ID}')">Remove</button>
+            <button onclick="toggleReadStatus('${library[i].ID}')">Toggle Read Status</button>
         `;
 
         libraryContainer.appendChild(bookElement);
@@ -64,6 +78,11 @@ sumbitButton.addEventListener('click', () => {
     addBookToLibrary(title, author, pages, read);
     displayLibrary();
     dialog.close();
+
+    document.getElementById('title').value = "";
+    document.getElementById('author').value = "";
+    document.getElementById('pages').value = "";
+    document.getElementById('read').checked = false;
 });
 
 // Close dialog when cancel is clicked
