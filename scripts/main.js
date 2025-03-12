@@ -88,6 +88,11 @@ sumbitButton.addEventListener('click', () => {
 // Close dialog when cancel is clicked
 cancelButton.addEventListener("click", function () {
     newBookDialog.close();
+
+    document.getElementById('title').value = "";
+    document.getElementById('author').value = "";
+    document.getElementById('pages').value = "";
+    document.getElementById('read').checked = false;
 });
 
 
