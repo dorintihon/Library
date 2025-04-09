@@ -1,61 +1,87 @@
 
 
-const library = [];
+class Library{
+    constructor(){
+        this.library = [];
+    }
 
-function Book(){
-    this.ID = crypto.randomUUID();
-    this.title = "";
-    this.author = "";
-    this.pages = 0;
-    this.read = false;
-}
+    addBookToLibrary(title, author, pages, read){
+        const book = new Book();
+        book.title = title;
+        book.author = author;
+        book.pages = pages;
+        book.read = read;
+        this.library.push(book);
+    }
 
-function addBookToLibrary(title, author, pages, read){
-    const book = new Book();
-    book.title = title;
-    book.author = author;
-    book.pages = pages;
-    book.read = read;
-    library.push(book);
-}
+    removeBookFromLibrary(ID){
+        const index = this.library.findIndex(book => book.ID === ID);
+        this.library.splice(index, 1);
+        this.displayLibrary();
+    }
 
-function removeBookFromLibrary(ID){
-    const index = library.findIndex(book => book.ID === ID);
-    library.splice(index, 1);
-    displayLibrary();
-}
+    toggleReadStatus(ID){
+        const book = this.library.find(book => book.ID === ID);
+        book.read = !book.read;
+        this.displayLibrary();
+    }
 
-function toggleReadStatus(ID){
-    const book = library.find(book => book.ID === ID);
-    book.read = !book.read;
-    displayLibrary();
-}
+    displayLibrary(){
+        const libraryContainer = document.getElementById('libraryContainer');
+        libraryContainer.innerHTML = "";
+    
+        for(let i = 0; i < this.library.length; i++){
+           const bookElement = document.createElement('div');
+            bookElement.classList.add('book');
+            bookElement.innerHTML = `
+                <h3>Book ${i + 1}</h3>
+                <p>ID: ${this.library[i].ID}</p>
+                <h1>${this.library[i].title}</h1>
+                <p>Author: ${this.library[i].author}</p>
+                <p>Pages: ${this.library[i].pages}</p>
+                <p>Read: ${this.library[i].read ? "Yes" : "No"}</p>
+            `;
 
-function displayLibrary(){
-    const libraryContainer = document.getElementById('libraryContainer');
-    libraryContainer.innerHTML = "";
+            // Create Remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Remove';
+            removeBtn.addEventListener('click', () => {
+                this.removeBookFromLibrary(this.library[i].ID);
+            });
 
-    for(let i = 0; i < library.length; i++){
-       const bookElement = document.createElement('div');
-        bookElement.classList.add('book');
-        bookElement.innerHTML = `
-            <h3>Book ${i + 1}</h3>
-            <p>ID: ${library[i].ID}</p>
-            <h1>${library[i].title}</h1>
-            <p>Author: ${library[i].author}</p>
-            <p>Pages: ${library[i].pages}</p>
-            <p>Read: ${library[i].read ? "Yes" : "No"}</p>
-            <button onclick="removeBookFromLibrary('${library[i].ID}')">Remove</button>
-            <button onclick="toggleReadStatus('${library[i].ID}')">Toggle Read Status</button>
-        `;
+            // Create Toggle Read Status button
+            const toggleBtn = document.createElement('button');
+            toggleBtn.textContent = 'Toggle Read Status';
+            toggleBtn.addEventListener('click', () => {
+                this.toggleReadStatus(this.library[i].ID);
+            });
 
-        libraryContainer.appendChild(bookElement);
+            bookElement.appendChild(removeBtn);
+            bookElement.appendChild(toggleBtn);
+
+    
+            libraryContainer.appendChild(bookElement);
+        }
     }
 }
+
+
+class Book{
+    constructor(){
+        this.ID = crypto.randomUUID();
+        this.title = "";
+        this.author = "";
+        this.pages = 0;
+        this.read = false;
+    }
+}
+
+const libraryInstance = new Library();
 
 const dialog = document.querySelector('dialog');
 const newBookButton = document.getElementById('newBook');
 const sumbitButton = dialog.querySelector('#submit');
+const cancelButton = dialog.querySelector('#cancel');
 
 
 //Show dialog
@@ -75,8 +101,8 @@ sumbitButton.addEventListener('click', () => {
         return;
     }
 
-    addBookToLibrary(title, author, pages, read);
-    displayLibrary();
+    libraryInstance.addBookToLibrary(title, author, pages, read);
+    libraryInstance.displayLibrary();
     dialog.close();
 
     document.getElementById('title').value = "";
@@ -96,4 +122,4 @@ cancelButton.addEventListener("click", function () {
 });
 
 
-window.onload = displayLibrary();
+window.onload = libraryInstance.displayLibrary();
